@@ -45,12 +45,18 @@ async def test1(ctx):
     for i in dir(ctx):
         print(getattr(ctx,i))
 
-    await ctx.send('test passed! message:'+ctx.content[6:])
+    await ctx.send('/me test passed! message:'+ctx.content[6:])
 
 @bot.command(name='clip')
 async def startClip(ctx):
-    inputTimeCode =
-    print(ctx.channel+" start cliping at "+ctx.content[6:]);
+    inputTimeCode = ctx.content[6:]
+    if(timeCodeTest(inputTimeCode)):
+        await ctx.send('/me Clip start at ' +inputTimeCode)
+        print(ctx.channel + " start cliping at " +inputTimeCode)
+    else:
+        await ctx.send('/me Invalid input! Time code format:xx:xx:xx')
+
+
 
     await ctx.send('')
 
@@ -66,6 +72,4 @@ def timeCodeTest(timecode):
 
 if __name__ == "__main__":
     print(f"Bots try to go into {os.environ['CHANNEL']} chatroom...")
-    timeCodeTest("11:00:11")
-    timeCodeTest("a")
-    #bot.run()
+    bot.run()
