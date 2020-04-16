@@ -11,16 +11,16 @@ bot = commands.Bot(
     initial_channels=os.environ['CHANNEL'].split(',')
 )
 
-usingClip = {}
+usingClip = dict()
 
 
 @bot.event
 async def event_ready():
     'Called once when the bot goes online.'
     print(f"{os.environ['BOT_NICK']} is online!")
-    # ws = bot.ws  # this is only needed to send messages within event_ready
-    # await ws.send_privmsg(os.environ['CHANNEL'], f"/me has landed!")
-    # await ctx.channel.send(f"/me has landed!")
+    #ws = bot.ws  # this is only needed to send messages within event_ready
+    #await ws.send_privmsg(os.environ['CHANNEL'], f"/me has landed!")
+    #await ctx.channel.send(f"/me has landed!")
 
 
 @bot.event
@@ -47,7 +47,8 @@ async def test1(ctx):
     for i in dir(ctx):
         print(getattr(ctx, i))
     '''
-    print(usingClip.items())
+    #print(usingClip.items())
+    print(usingClip)
     await ctx.send('/me test passed! message:' + ctx.content[6:])
 
 
@@ -61,7 +62,10 @@ async def botclear(ctx):
 
 def timeCodeTest(timecode):
     pattern = r"[+-][0-9][0-9][0-9]"  # +121 or -12
+    print(timecode)
     if re.fullmatch(pattern, timecode):
+        return True
+    elif timecode =='' :
         return True
     else:
         return False
@@ -71,12 +75,12 @@ def timeCodeTest(timecode):
 async def startClip(ctx):
     inputTimeCode = ctx.content[11:]
     if timeCodeTest(inputTimeCode):
-        print(ctx.channel.name + " start cliping at " + inputTimeCode + " by " + ctx.author.name)
+        print(ctx.channel.name + " start cliping  " + inputTimeCode + " by " + ctx.author.name)
         if ctx.author.name in usingClip[ctx.channel.name]:
-            await ctx.send('/me @' + ctx.author.name + 'Clip start fail! Please use !endclip or !botclear')
+            await ctx.send('/me @' + ctx.author.name + ' Clip start fail! Please use !endclip or !botclear')
         else:
-            usingClip[ctx.channel.name] = ctx.author.name
-            await ctx.send('/me @' + ctx.author.name + 'Clip start success at ' + inputTimeCode)
+            usingClip[ctx.channel.name].append(ctx.author.name)
+            await ctx.send('/me @' + ctx.author.name + ' Clip start success ' + inputTimeCode)
 
     else:
         await ctx.send('/me Invalid input! Time code format: +xxx or -xxx')
@@ -87,11 +91,11 @@ async def endClip(ctx):
     inputTimeCode = ctx.content[9:]
     if timeCodeTest(inputTimeCode):
         if ctx.author.name in usingClip[ctx.channel.name]:
-            usingClip[ctx.channel.name] = ctx.author.name
-            await ctx.send('/me @' + ctx.author.name + 'Clip end success at ' + inputTimeCode)
+            usingClip[ctx.channel.name] .remove(ctx.author.name)
+            await ctx.send('/me @' + ctx.author.name + ' Clip end success ' + inputTimeCode)
 
         else:
-            await ctx.send('/me @' + ctx.author.name + 'Clip end fail! Please use !startclip')
+            await ctx.send('/me @' + ctx.author.name + ' Clip end fail! Please use !startclip')
         # print(ctx.channel.name + " start cliping at " +inputTimeCode+" by "+ctx.author.name)
     else:
         await ctx.send('/me Invalid input! Time code format: +xxx or -xxx')
@@ -102,7 +106,7 @@ async def endClip(ctx):
 async def createclip(ctx):
     inputTimeCode = ctx.content[12:]
     if timeCodeTest(inputTimeCode):
-        await ctx.send('/me @' + ctx.author.name + 'Clip created success at ' + inputTimeCode)
+        await ctx.send('/me @' + ctx.author.name + ' Clip created success ' + inputTimeCode)
         # print(ctx.channel.name + " start cliping at " +inputTimeCode+" by "+ctx.author.name)
     else:
         await ctx.send('/me Invalid input! Time code format: +xxx or -xxx')
