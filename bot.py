@@ -8,8 +8,10 @@ from twitchio.ext import commands
 bot = commands.Bot(
     irc_token=os.environ['TMI_TOKEN'],
     client_id=os.environ['CLIENT_ID'],
+    client_secret=os.environ['CLIENT_SECRET'],
     nick=os.environ['BOT_NICK'],
     prefix=os.environ['BOT_PREFIX'],
+    # initial_channels=os.environ['CHANNEL']
     initial_channels=os.environ['CHANNEL'].split(',')
 )
 
@@ -75,6 +77,7 @@ def timeCodeTest(timecode):
 async def uptime(ctx):
     re = await ctx.channel.get_stream()
     if re:
+
         stamp = datetime.fromisoformat(re['started_at'][:-1])
         stamp =   datetime.utcnow() - stamp
         hour = str(int(stamp.total_seconds()//3600))
