@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from twitchio.ext import commands
 
-# set up the bot 
+# set up the bot 3
 bot = commands.Bot(
     irc_token=os.environ['TMI_TOKEN'],
     client_id=os.environ['CLIENT_ID'],
